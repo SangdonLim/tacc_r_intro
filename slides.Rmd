@@ -1,0 +1,443 @@
+---
+title: "Tutorial: TACC Stampede2"
+author: "Sangdon Lim [&lt;sangdonlim@utexas.edu&gt;](mailto:sangdonlim@utexas.edu)"
+date: "Quantitative Methods<br/>Department of Educational Psychology<br/>University of Texas at Austin"
+output:
+  revealjs::revealjs_presentation:
+    theme: night
+    highlight: zenburn
+    transition: none
+    self_contained: true
+    css: slides.css
+    reveal_options:
+      slideNumber: "c/t"
+---
+
+# Supercomputer
+
+* A supercomputer is made up of many computers called "nodes"
+* Each node has some number of "workers"
+* A desktop computer typically has 4 - 8 workers (threads)
+* Run this in `R` to find out the # of workers on your machine:
+
+```
+parallel::detectCores()
+```
+
+* TACC Stampede2 has 4200 nodes * 272 workers
+
+# Parallelization
+
+* Involves distributing a set of tasks to workers
+
+* 1 task in Monte Carlo simulation:
+  * processing one trial in a single condition, from data generation to analysis
+
+* Each worker performs:
+  1) Process the allocated task
+  2) Returns the result to the task manager
+  3) Request another task
+  4) Repeat 1-3 until completed
+
+# Converting your code
+
+```{r, eval = F}
+# The non-parallel version
+
+
+
+
+
+
+
+n_tasks <- 100
+results <- matrix(NA, n_tasks, 2)
+for     (task in 1:n_tasks                  )         {
+  set.seed(task)
+  tmp <- runif(1, 1, 2)
+  Sys.sleep(tmp)
+  results[task, ] <-
+  c(task, tmp)
+}
+```
+
+# Converting your code
+
+```{r, eval = F}
+# The non-parallel version with foreach
+library(foreach)
+
+
+
+
+
+
+n_tasks <- 100
+results <-
+foreach (task in 1:n_tasks, .combine = rbind) %do%    {
+  set.seed(task)
+  tmp <- runif(1, 1, 2)
+  Sys.sleep(tmp)
+
+  c(task, tmp)
+}
+```
+
+# Converting your code
+
+```{r eval = F}
+# The parallel version (for your computer)
+library(foreach)
+library(doParallel)
+
+n_cores <- detectCores() - 2 # Reserve a few workers for other tasks
+cl <- makeCluster(n_cores)
+registerDoParallel(cl)
+
+n_tasks <- 100
+results <-
+foreach (task in 1:n_tasks, .combine = rbind) %dopar% {
+  set.seed(task)
+  tmp <- runif(1, 1, 2)
+  Sys.sleep(tmp)
+
+  c(task, tmp)
+}
+```
+
+# Converting your code
+
+```{r, eval = F}
+# The parallel version (for Stampede2)
+library(foreach)
+library(doParallel)
+library(Rmpi)
+
+cl <- getMPIcluster()
+registerDoParallel(cl)
+
+n_tasks <- 100
+results <-
+foreach (task in 1:n_tasks, .combine = rbind) %dopar% {
+  set.seed(task)
+  tmp <- runif(1, 1, 2)
+  Sys.sleep(tmp)
+
+  c(task, tmp)
+}
+```
+
+# Accessing TACC
+
+needs `ssh`.
+
+Windows users need some setup for this.
+
+```
+Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
+```
+
+1. Open powershell with admin rights.
+2. Run the above command to install Linux subsystem.
+- (this needs a reboot)
+
+3. Install Ubuntu from Windows store.
+- (use the most recent version)
+
+4. Run Ubuntu and create your username and password.
+- (this stays on your computer)
+
+5. Also install Windows Terminal from Windows store.
+
+# Accessing TACC
+
+needs `ssh`.
+
+Mac users can use Terminal from Launchpad.
+
+# Accessing TACC
+
+Now we have the console ready.
+
+Run this to get in:
+```
+ssh <<your tacc username>>@stampede2.tacc.utexas.edu
+```
+
+example:
+```
+ssh sangdonlim@stampede2.tacc.utexas.edu
+```
+
+Type in your TACC password and the 2FA code.
+
+- TACC has its own 2FA app
+- Instructions available on TACC website
+- This is different from Duo used on UT websites
+
+If your TACC account does not belong to a faculty project you won't be able to login yet.
+
+# Locale:
+
+If you get error messages about locale after login:
+
+1. Run this to exit from TACC:
+
+```
+exit
+```
+
+2. Run this on your console:
+
+```
+sudo update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
+```
+
+3. Close and reopen the console.
+
+If you don't get locale error messages, move on.
+
+# Using Stampede2
+
+1. Load R module
+2. Install packages you need
+3. Upload files
+4. Submit a job
+5. Have a ☕
+6. Download files
+
+# Load R module
+
+Run this:
+
+```
+module load Rstats/3.5.1
+```
+
+Note: you must use R 3.5.1 because TACC does not support running R 4.0.3 in parallel yet (as of January 2021)
+
+R 4.0.3 is on TACC but it does not run in parallel yet.
+
+# Install R packages
+
+Run this:
+```
+R
+```
+
+and `install.packages()`.
+
+Installed packages stay on your TACC account.
+
+To exit from R, run `q()`.
+
+# Upload files
+
+Open another console. Run this:
+
+```
+sftp <<your tacc username>>@stampede2.tacc.utexas.edu
+```
+
+example:
+```
+sftp sangdonlim@stampede2.tacc.utexas.edu
+```
+
+# Upload files
+
+Use these Linux commands:
+
+```
+pwd          ## show the current working directory on remote (Stampede2)
+lpwd         ## show the current working directory on local (your computer)
+
+ls           ## list all files in remote working directory
+lls          ## list all files in local working directory
+
+cd mydir     ## open a folder named mydir on remote
+lcd mydir    ## open a folder named mydir on local (your computer)
+
+mkdir mydir  ## create a folder named mydir on remote
+lmkdir mydir ## create a folder named mydir on local
+
+put *        ## upload all files from remote wd to local wd
+get *        ## download all files from remote wd to local wd
+```
+
+``~`` is a shortcut to your home directory on TACC.
+
+To go to your home directory on TACC:
+
+```
+cd ~
+```
+
+# Submit a job
+
+needs a SLURM script.
+
+Create a file named `run.sh` with 
+
+```
+#!/bin/bash
+#SBATCH -J sim               # Job name
+#SBATCH -o sim.o             # Name of stdout output log file
+#SBATCH -e sim.e             # Name of stderr output log file
+#SBATCH -N 4                 # Total number of nodes to request
+#SBATCH -n 32                # Total number of workers to request (distributed over nodes)
+#SBATCH -p development       # The type of queue to submit to
+#SBATCH -t 0:10:00           # Time limit to request (hh:mm:ss)
+#SBATCH -A YOUR_PROJECT_ID   # Your project name
+#SBATCH --mail-user=YOUR@EMAIL.EDU # TACC will send emails with status updates
+#SBATCH --mail-type=all            # Get all status updates
+
+# load R module
+module reset
+module load Rstats/3.5.1
+
+# call R code from RMPISNOW
+ibrun RMPISNOW < main.R
+```
+
+This job will run `main.R`.
+
+# Submit a job
+
+Now submit the job:
+
+```
+sbatch run.sh
+```
+
+The job is now on the waiting line.
+
+# Time limit
+
+The job will run for 10 minutes as specified in the SLURM script.
+
+If your R code does not complete within the time limit:
+
+- TACC will force-stop the code.
+- Prepare your code for this!
+
+# Have a ☕
+
+To see the status of the job:
+
+```
+showq -u
+```
+
+To cancel the job:
+
+```
+scancel <JOB_ID>
+```
+
+example:
+```
+scancel 123456
+```
+
+# If job fails:
+
+Examine log files:
+
+```
+cat sim.o
+cat sim.e
+```
+
+Filenames are specified in the SLURM script.
+
+# TACC storage types
+
+TACC has multiple storage areas
+
+* ``$HOME`` : 10GB, auto backup, permanent
+* ``$WORK`` : 1TB, no backup, permanent
+* ``$SCRATCH`` : Unlimited (~30PB), no backup, deleted after 10 days
+
+Linux commands to move to each folder:
+
+```
+cd $HOME
+cd $WORK
+cd $SCRATCH
+```
+
+R functions to retrieve file paths:
+
+```
+Sys.getenv("HOME")
+Sys.getenv("WORK")
+Sys.getenv("SCRATCH")
+```
+
+# The big red button
+
+When you are done with testing on ``development`` queue
+
+* increase # of nodes and workers in SLURM script
+* also increase the time limit
+* and submit to the ``normal`` queue
+* have a 😴
+
+# TACC queue types
+
+https://portal.tacc.utexas.edu/user-guides/stampede2#table5
+
+Each queue has limits on what each job can request.
+
+* ``development``: 16 nodes, 2 hours
+* ``normal``: 256 nodes, 48 hours
+* ``large``: 2048 nodes, 48 hours
+* ``long``: 32 nodes, 120 hours
+
+Your project has SU credits assigned to it.
+
+Use one node for one hour = costs 0.8 SU
+
+Other types of processors have their own queue type. See the link above.
+
+# More on time limit
+
+If you request for 48 h but it completes in 1 h:
+
+- You will be only charged for 1 hour SU.
+
+\
+
+Reasons to not to specify 99999 nodes * 999 hours:
+
+- You will have to wait longer on the list.
+
+- TACC will "hold" the full amount of SU on your project until it knows how much it needs to charge.
+
+# General guide on coding for TACC
+
+1. Save your data to a file within each loop.
+- TACC will force-stop your code after your time limit.
+- You must specify the time limit in SLURM when submitting your job.
+
+\
+
+2. Make your code be able to skip a loop when result files are already there.
+
+# General guide on coding for TACC
+
+3. Spend less time on optimizing your code.
+- Time works differently on TACC.
+- Your fingers are slower than TACC.
+- The time you spend on optimizing can be spent on just running your code on TACC.
+
+\
+
+4. Spend more time on making your code error-free.
+- TACC has a waiting list.
+- If you wait for 1 day on the list and the code errors in 5 seconds then you won't like it.
+
+# General guide on coding for TACC
+
+5. Do not use ``tidyverse``. It will make everything slow.

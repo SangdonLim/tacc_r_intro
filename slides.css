@@ -1,0 +1,63 @@
+.reveal h1, .reveal h2, .reveal h3, .reveal p,
+.reveal li, .reveal pre code, .reveal code, .reveal .slide-number {
+  font-family: "Consolas", "Menlo", monospace;
+}
+.reveal h1, .reveal h2 {
+  font-size: 1.5em;
+}
+.reveal h3 {
+  font-size: 0.75em;
+  margin-top: 60px;
+  line-height: 1.5;
+}
+
+.reveal a {
+  color: #04f;
+}
+
+.reveal pre {
+  box-shadow: 0px 0px 8px 0px rgba(0, 0, 255, 1);
+} /* code block shadow override */
+
+.reveal pre code {
+  font-weight: bold;
+  padding: 16px;
+} /* code block font use bold */
+
+div.sourceCode {
+  background-color: inherit;
+} /* code block background color override */
+pre > code.sourceCode > span {
+  line-height: 1;
+} /* code block vertical spacing between lines */
+
+.reveal .slides {
+  text-align: inherit;
+}
+
+.reveal .controls {
+  visibility: hidden;
+} /* hide controls */
+
+.reveal .progress {
+  top: 0;
+  bottom: unset;
+  height: 16px;
+}
+.reveal .progress span {
+  background: #04f;
+  transition: none;
+  -webkit-transition: none;
+  -moz-transition: none;
+} /* progress bar override */ 
+
+.reveal .slide-number {
+  background: inherit;
+  font-size: 0.75em;
+  right: 4em;
+  bottom: 2em;
+}
+.reveal .slide-number-delimiter {
+  margin: 1ch;
+} /* slide number override */
+
