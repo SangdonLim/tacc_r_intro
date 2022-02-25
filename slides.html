@@ -15,6 +15,7 @@
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
 div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
@@ -529,7 +530,7 @@ document.getElementsByTagName('head')[0].appendChild(style);
 <ul>
 <li>A supercomputer is made up of many computers called “nodes”</li>
 <li>Each node has some number of “workers”</li>
-<li>A desktop computer typically has 4 - 8 workers (threads)</li>
+<li>A desktop computer (1 node) typically has 4 - 8 workers (threads)</li>
 <li>Run this in <code>R</code> to find out the # of workers on your machine:</li>
 </ul>
 <pre><code>parallel::detectCores()</code></pre>
@@ -544,7 +545,7 @@ document.getElementsByTagName('head')[0].appendChild(style);
 <li><p>Involves distributing a set of tasks to workers</p></li>
 <li><p>1 task in Monte Carlo simulation:</p>
 <ul>
-<li>processing one trial in a single condition, from data generation to analysis</li>
+<li>processing one replication of a single condition, from data generation to analysis</li>
 </ul></li>
 <li><p>Each worker performs:</p>
 <ol type="1">
@@ -926,8 +927,12 @@ Sys.getenv(&quot;SCRATCH&quot;)</code></pre>
 <section id="general-guide-on-coding-for-tacc-2" class="title-slide slide level1">
 <h1>General guide on coding for TACC</h1>
 <ol start="5" type="1">
-<li>Do not use <code>tidyverse</code>. It will make everything slow.</li>
+<li>If you are using <code>tidyverse</code>..</li>
 </ol>
+<ul>
+<li>Consider converting your code to not use it.</li>
+<li><code>tidyverse</code> is a big package, and it may make your code take a lot more time to run on TACC.</li>
+</ul>
 </section>
     </div>
   </div>
@@ -940,16 +945,52 @@ Sys.getenv(&quot;SCRATCH&quot;)</code></pre>
       // Full list of configuration options available at:
       // https://github.com/hakimel/reveal.js#configuration
       Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: true,
+        // Display a presentation progress bar
+        progress: true,
         // Display the page number of the current slide
         slideNumber: 'c/t',
         // Push each slide change to the browser history
         history: true,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
         // Vertical centering of slides
         center: false,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // Loop the presentation
+        loop: false,
+        // Change the presentation direction to be RTL
+        rtl: false,
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
         // Transition style
         transition: 'none', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
         // Transition style for full page slide backgrounds
         backgroundTransition: 'default', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
 
 
 

@@ -17,7 +17,7 @@ output:
 
 * A supercomputer is made up of many computers called "nodes"
 * Each node has some number of "workers"
-* A desktop computer typically has 4 - 8 workers (threads)
+* A desktop computer (1 node) typically has 4 - 8 workers (threads)
 * Run this in `R` to find out the # of workers on your machine:
 
 ```
@@ -31,7 +31,7 @@ parallel::detectCores()
 * Involves distributing a set of tasks to workers
 
 * 1 task in Monte Carlo simulation:
-  * processing one trial in a single condition, from data generation to analysis
+  * processing one replication of a single condition, from data generation to analysis
 
 * Each worker performs:
   1) Process the allocated task
@@ -440,4 +440,6 @@ Reasons to not to specify 99999 nodes * 999 hours:
 
 # General guide on coding for TACC
 
-5. Do not use ``tidyverse``. It will make everything slow.
+5. If you are using ``tidyverse``..
+- Consider converting your code to not use it.
+- ``tidyverse`` is a big package, and it may make your code take a lot more time to run on TACC.
