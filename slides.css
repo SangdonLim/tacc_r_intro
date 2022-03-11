@@ -61,3 +61,6 @@ pre > code.sourceCode > span {
   margin: 1ch;
 } /* slide number override */
 
+.reveal ul {
+  display: block;
+} /* force list newline */

@@ -127,27 +127,50 @@ foreach (task in 1:n_tasks, .combine = rbind) %dopar% {
 }
 ```
 
+# Code prep
+
+Organize your simulation like this:
+
+```{r, eval = F}
+conditions <- expand.grid(
+  IV1 = c(100, 300, 500),
+  IV2 = c(1, 2, 3)
+)
+task_list <- expand.grid(
+  idx_condition = 1:dim(conditions)[1],
+  idx_trial     = 1:100
+)
+n_tasks <- dim(task_list)[1]
+tasks <- 1:n_tasks
+tasks <- sample(tasks)
+
+foreach (task in 1:n_tasks, .combine = rbind) %dopar% {
+  idx_condition   <- task_list$idx_condition[task]
+  idx_replication <- task_list$idx_replication[task]
+  set.seed(idx_replication)
+  # do your thing here
+}
+```
+
+The key is to have one script run everything!
+
 # Accessing TACC
 
 needs `ssh`.
 
 Windows users need some setup for this.
 
-```
-Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
-```
+1. Install WSL. Google this!
 
-1. Open powershell with admin rights.
-2. Run the above command to install Linux subsystem.
-- (this needs a reboot)
+- (use either WSL1 or WSL2)
 
-3. Install Ubuntu from Windows store.
+2. Install Ubuntu from Windows store.
 - (use the most recent version)
 
-4. Run Ubuntu and create your username and password.
+3. Run Ubuntu and create your username and password.
 - (this stays on your computer)
 
-5. Also install Windows Terminal from Windows store.
+4. Also install Windows Terminal from Windows store.
 
 # Accessing TACC
 
@@ -179,7 +202,9 @@ If your TACC account does not belong to a faculty project you won't be able to l
 
 # Locale:
 
-If you get error messages about locale after login:
+If you get error messages about locale after login, it is okay to ignore it.
+
+But if you want to fix it:
 
 1. Run this to exit from TACC:
 
@@ -194,8 +219,6 @@ sudo update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
 ```
 
 3. Close and reopen the console.
-
-If you don't get locale error messages, move on.
 
 # Using Stampede2
 
@@ -265,12 +288,22 @@ put *        ## upload all files from remote wd to local wd
 get *        ## download all files from remote wd to local wd
 ```
 
-``~`` is a shortcut to your home directory on TACC.
+# Upload files
 
-To go to your home directory on TACC:
+``~`` is a shortcut to your home directory.
+
+To change your remote (TACC) working directory to your remote home directory:
 
 ```
 cd ~
+```
+
+If you are using Windows, your C drive is located on ``/mnt/c/``.
+
+To change your local working directory to your local C drive:
+
+```
+lcd /mnt/c/
 ```
 
 # Submit a job
@@ -311,6 +344,17 @@ sbatch run.sh
 ```
 
 The job is now on the waiting line.
+
+# Task allocation
+
+In the SLURM script we requested for:
+
+- 32 workers to be distributed over 4 nodes
+
+This does not mean we will get 8 workers in each node!
+
+- worker assignments are done dynamically
+- users do not have direct control
 
 # Time limit
 
@@ -417,13 +461,13 @@ Reasons to not to specify 99999 nodes * 999 hours:
 
 # General guide on coding for TACC
 
-1. Save your data to a file within each loop.
+1. Save your results to a file after each task.
 - TACC will force-stop your code after your time limit.
 - You must specify the time limit in SLURM when submitting your job.
 
 \
 
-2. Make your code be able to skip a loop when result files are already there.
+2. Make your code be able to skip a task when result files are already there.
 
 # General guide on coding for TACC
 
