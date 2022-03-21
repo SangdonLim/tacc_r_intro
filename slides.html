@@ -1931,6 +1931,7 @@ machine:</li>
 <li>processing one replication of a single condition, from data
 generation to analysis</li>
 </ul></li>
+<li><p>16 conditions * 100 reps = 1600 tasks</p></li>
 <li><p>Each worker performs:</p>
 <ol type="1">
 <li>Process the allocated task</li>
@@ -2072,7 +2073,8 @@ generation to analysis</li>
 <li>(this stays on your computer)</li>
 </ul>
 <ol start="4" type="1">
-<li>Also install Windows Terminal from Windows store.</li>
+<li><p>Also install Windows Terminal from Windows store.</p></li>
+<li><p>Use Windows Terminal to use Ubuntu.</p></li>
 </ol>
 </section>
 
@@ -2133,18 +2135,33 @@ ignore it.</p>
 <h1>Load R module</h1>
 <p>Run this:</p>
 <pre><code>module load Rstats/3.5.1</code></pre>
-<p>Note: you must use R 3.5.1 because TACC does not support running R
-4.0.3 in parallel yet (as of January 2021)</p>
-<p>R 4.0.3 is on TACC but it does not run in parallel yet.</p>
+<p>Note: you must use R 3.5.1!</p>
+<p>R 4.0.3 is on TACC but it does not run in parallel yet (as of March
+2022)</p>
 </section>
 
 <section id="install-r-packages" class="title-slide slide level1">
 <h1>Install R packages</h1>
 <p>Run this:</p>
 <pre><code>R</code></pre>
-<p>and <code>install.packages()</code>.</p>
+<p>and <code>install.packages()</code></p>
 <p>Installed packages stay on your TACC account.</p>
-<p>To exit from R, run <code>q()</code>.</p>
+<p>To exit from R, run <code>q()</code></p>
+</section>
+
+<section id="install-r-packages-1" class="title-slide slide level1">
+<h1>Install R packages</h1>
+<p>Because R 3.5.1 is old..</p>
+<p><code>install.packages()</code> may not work for some packages.</p>
+<p>To install old versions manually:</p>
+<pre><code>library(devtools)
+install_version(&quot;mirt&quot;, version = &quot;1.31&quot;, repos = &quot;http://cran.us.r-project.org&quot;)</code></pre>
+</section>
+
+<section id="install-r-packages-2" class="title-slide slide level1">
+<h1>Install R packages</h1>
+<p>or raise a support ticket on TACC to let them know we need R
+4.0.3!</p>
 </section>
 
 <section id="upload-files" class="title-slide slide level1">
@@ -2357,7 +2374,7 @@ code on TACC.</li>
 </ol>
 <ul>
 <li>TACC has a waiting list.</li>
-<li>If you wait for 1 day on the list and the code errors in 5 seconds
+<li>If you wait for 5 days on the list and the code errors in 5 seconds
 then you won’t like it.</li>
 </ul>
 </section>

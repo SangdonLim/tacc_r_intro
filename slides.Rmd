@@ -29,9 +29,10 @@ parallel::detectCores()
 # Parallelization
 
 * Involves distributing a set of tasks to workers
-
 * 1 task in Monte Carlo simulation:
   * processing one replication of a single condition, from data generation to analysis
+
+* 16 conditions * 100 reps = 1600 tasks
 
 * Each worker performs:
   1) Process the allocated task
@@ -172,6 +173,8 @@ Windows users need some setup for this.
 
 4. Also install Windows Terminal from Windows store.
 
+5. Use Windows Terminal to use Ubuntu.
+
 # Accessing TACC
 
 needs `ssh`.
@@ -237,9 +240,9 @@ Run this:
 module load Rstats/3.5.1
 ```
 
-Note: you must use R 3.5.1 because TACC does not support running R 4.0.3 in parallel yet (as of January 2021)
+Note: you must use R 3.5.1!
 
-R 4.0.3 is on TACC but it does not run in parallel yet.
+R 4.0.3 is on TACC but it does not run in parallel yet (as of March 2022)
 
 # Install R packages
 
@@ -248,11 +251,28 @@ Run this:
 R
 ```
 
-and `install.packages()`.
+and `install.packages()`
 
 Installed packages stay on your TACC account.
 
-To exit from R, run `q()`.
+To exit from R, run `q()`
+
+# Install R packages
+
+Because R 3.5.1 is old..
+
+`install.packages()` may not work for some packages.
+
+To install old versions manually:
+
+```
+library(devtools)
+install_version("mirt", version = "1.31", repos = "http://cran.us.r-project.org")
+```
+
+# Install R packages
+
+or raise a support ticket on TACC to let them know we need R 4.0.3!
 
 # Upload files
 
@@ -480,7 +500,7 @@ Reasons to not to specify 99999 nodes * 999 hours:
 
 4. Spend more time on making your code error-free.
 - TACC has a waiting list.
-- If you wait for 1 day on the list and the code errors in 5 seconds then you won't like it.
+- If you wait for 5 days on the list and the code errors in 5 seconds then you won't like it.
 
 # General guide on coding for TACC
 
