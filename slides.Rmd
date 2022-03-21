@@ -507,3 +507,11 @@ Reasons to not to specify 99999 nodes * 999 hours:
 5. If you are using ``tidyverse``..
 - Consider converting your code to not use it.
 - ``tidyverse`` is a big package, and it may make your code take a lot more time to run on TACC.
+
+\
+
+# Thanks!
+
+- slides made with ``revealjs`` in R markdown
+- source available on https://github.com/SangdonLim/tacc_r_intro
+- last updated March 2022
