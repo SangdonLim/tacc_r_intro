@@ -74,7 +74,7 @@ library(foreach)
 
 n_tasks <- 100
 results <-
-foreach (task in 1:n_tasks, .combine = rbind) %do%    {
+foreach (task =  1:n_tasks, .combine = rbind) %do%    {
   set.seed(task)
   tmp <- runif(1, 1, 2)
   Sys.sleep(tmp)
@@ -96,7 +96,7 @@ registerDoParallel(cl)
 
 n_tasks <- 100
 results <-
-foreach (task in 1:n_tasks, .combine = rbind) %dopar% {
+foreach (task =  1:n_tasks, .combine = rbind) %dopar% {
   set.seed(task)
   tmp <- runif(1, 1, 2)
   Sys.sleep(tmp)
@@ -118,7 +118,7 @@ registerDoParallel(cl)
 
 n_tasks <- 100
 results <-
-foreach (task in 1:n_tasks, .combine = rbind) %dopar% {
+foreach (task =  1:n_tasks, .combine = rbind) %dopar% {
   set.seed(task)
   tmp <- runif(1, 1, 2)
   Sys.sleep(tmp)
@@ -144,7 +144,7 @@ n_tasks <- dim(task_list)[1]
 tasks <- 1:n_tasks
 tasks <- sample(tasks)
 
-foreach (task in 1:n_tasks, .combine = rbind) %dopar% {
+foreach (task =  1:n_tasks, .combine = rbind) %dopar% {
   idx_condition   <- task_list$idx_condition[task]
   idx_replication <- task_list$idx_replication[task]
   set.seed(idx_replication)
