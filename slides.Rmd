@@ -30,9 +30,9 @@ parallel::detectCores()
 
 * Involves distributing a set of tasks to workers
 * 1 task in Monte Carlo simulation:
-  * processing one replication of a single condition, from data generation to analysis
+  * processing one replication of a single condition, from data generation to collecting outcome
 
-* 16 conditions * 100 reps = 1600 tasks
+* 10 conditions * 100 reps = 1000 tasks
 
 * Each worker performs:
   1) Process the allocated task
